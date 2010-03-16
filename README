@@ -1,0 +1,8 @@
+This is a collection of URI dispatching using Plack::Request and various CPAN modules.
+
+Most examples would do:
+
+  GET / => "Hello World"
+  GET /blog/{year}/{month} => Get the list of blog posts in year/month
+  POST /comment => Post a comment with parameters id, name and body
+
