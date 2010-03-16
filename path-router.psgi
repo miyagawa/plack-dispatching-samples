@@ -7,12 +7,21 @@ use MyApp::Hello;
 use Path::Router;
 use Moose::Util::TypeConstraints;
 
+sub dispatch {
+    my ($r, $mapping) = @_;
+    my $controller = 'MyApp::' . $mapping->{controller};
+    my $action = $controller->can(lc($r->method) . '_' . $mapping->{action})
+        or return $r->new_response(405);
+    $controller->$action($r, $mapping);
+}
+
 my $router = Path::Router->new;
 $router->add_route('' => (
     defaults => {
         controller => 'Hello',
         action     => 'index',
     },
+    target => \&dispatch
 ));
 
 $router->add_route('blog/:year/:month' => (
@@ -23,7 +32,8 @@ $router->add_route('blog/:year/:month' => (
     validations => {
         year  => subtype( as 'Int' => where { $_ > 0 } ),
         month => subtype( as 'Int' => where { $_ >= 1 && $_ <= 12 } ),
-    }
+    },
+    target => \&dispatch
 ));
 
 $router->add_route('comment', => (
@@ -31,6 +41,7 @@ $router->add_route('comment', => (
         controller => 'Blog',
         action     => 'comment',
     },
+    target => \&dispatch
 ));
 
 sub {
@@ -38,10 +49,6 @@ sub {
     my $match = $router->match($req->path_info)
         or return $req->new_response(404)->finalize;
 
-    my $mapping = $match->mapping;
-    my $controller = "MyApp::" . $mapping->{controller};
-    my $action = $controller->can(lc($req->method) . "_" . $mapping->{action})
-        or return $req->new_response(405)->finalize;
-    my $res = $controller->$action($req, $mapping);
+    my $res = $match->target->($req, $match->mapping);
     $res->finalize;
 };
