@@ -22,7 +22,7 @@ $router->add_route('blog/:year/:month' => (
     },
     validations => {
         year  => subtype( as 'Int' => where { $_ > 0 } ),
-        month => subtype( as 'Int' => where { $_ >= 1 && $_ <= 31 } ),
+        month => subtype( as 'Int' => where { $_ >= 1 && $_ <= 12 } ),
     }
 ));
 
