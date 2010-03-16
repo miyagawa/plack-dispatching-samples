@@ -22,6 +22,13 @@ comparison. When it says "Can't do ...", it doesn't necessarily mean a
 minus - it means it's application's responsibility, which could mean
 more flexibilities.
 
+Also, the requirement "POST to GET-only endpoint should give 405" is
+nice to have, while in many cases it's not a fair game to add to
+dispatcher, because if the dispatcher supports that, there's no way to
+distinguish with non-existent paths (404) and if the dispatcher
+DOESN'T support that it becomes app's responsibility which could be
+easy.
+
 dancer:
   (Dancer doesn't use Plack::Request -- here's for the comparison)
   Can use named capture and regexp based dispatching
