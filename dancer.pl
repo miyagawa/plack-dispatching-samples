@@ -19,7 +19,4 @@ post '/comment' => sub {
 };
 
 # return PSGI app
-sub {
-    my $request = Dancer::Request->new(shift);
-    Dancer->dance($request);
-};
+sub { Dancer->dance( Dancer::Request->new(shift) ) };
