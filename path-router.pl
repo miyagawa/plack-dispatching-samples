@@ -5,6 +5,7 @@ use MyApp::Blog;
 use MyApp::Hello;
 
 use Path::Router;
+use Moose::Util::TypeConstraints;
 
 my $router = Path::Router->new;
 $router->add_route('' => (
@@ -19,6 +20,10 @@ $router->add_route('blog/:year/:month' => (
         controller => 'Blog',
         action     => 'monthly',
     },
+    validations => {
+        year  => subtype( as 'Int' => where { $_ > 0 } ),
+        month => subtype( as 'Int' => where { $_ >= 1 && $_ <= 31 } ),
+    }
 ));
 
 $router->add_route('comment', => (
@@ -35,7 +40,8 @@ sub {
 
     my $mapping = $match->mapping;
     my $controller = "MyApp::" . $mapping->{controller};
-    my $action = $controller->can(lc($req->method) . "_" . $mapping->{action});
+    my $action = $controller->can(lc($req->method) . "_" . $mapping->{action})
+        or return $req->new_response(404)->finalize;
     my $res = $controller->$action($req, $mapping);
     $res->finalize;
 };
