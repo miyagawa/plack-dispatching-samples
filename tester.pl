@@ -1,3 +1,4 @@
+use lib "lib";
 use Plack::Test;
 use Plack::Util;
 use HTTP::Request::Common;

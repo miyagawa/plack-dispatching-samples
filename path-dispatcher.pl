@@ -1,35 +1,26 @@
 use Plack::Request;
 use Plack::Response;
 
+use MyApp::Blog;
+use MyApp::Hello;
+
 {
     package MyApp::Dispatcher;
     use Path::Dispatcher::Declarative -base, -default => {
         token_delimiter => '/',
     };
 
-    on [] => sub {
-        my $res = Plack::Response->new(200);
-        $res->content_type('text/plain');
-        $res->content("Hello World");
-        $res
-    };
+    on [] => sub { MyApp::Hello->get_index(@_) };
 
     under { REQUEST_METHOD => 'GET' } => sub {
         on ['blog', qr/^\d+$/, qr/^\d+$/] => sub {
-            my $res = Plack::Response->new(200);
-            $res->content_type('text/html');
-            $res->content("Blog posts from $2/$3");
-            $res
+            MyApp::Blog->get_monthly(shift, { year => $2, month => $3 });
         };
     };
 
     under { REQUEST_METHOD => 'POST' } => sub {
         on 'comment' => sub {
-            my $req = shift;
-            my $res = Plack::Response->new(200);
-            $res->content_type('text/plain');
-            $res->content("Comment posted with body=" . $req->param('body'));
-            $res
+            MyApp::Blog->post_comment(@_);
         };
     };
 }
