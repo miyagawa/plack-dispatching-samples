@@ -26,6 +26,7 @@ use lib "lib";
     package MyApp::C::Blog;
     sub monthly {
         my($class, $req, $p) = @_;
+        return $req->new_response(404) if $req->method eq 'POST';
         my $res = $req->new_response(200);
         $res->content_type('text/html');
         $res->content("Blog posts from $p->{year}/$p->{month}");
