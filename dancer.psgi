@@ -1,5 +1,3 @@
-# NOTE: Dancer doesn't use Plack::Request - here's for a comparison
-
 use Dancer::Config 'setting';
 setting apphandler  => 'PSGI';
 Dancer::Config->load;
@@ -11,8 +9,9 @@ get '/' => sub {
     return "Hello World";
 };
 
-get '/blog/:year/:month' => sub {
-    return "Blog posts from " . params->{year} . "/" . params->{month};
+get r('/blog/(\d{4})/(\d{2})') => sub {
+    my($year, $month) = splat;
+    return "Blog posts from $year/$month";
 };
 
 post '/comment' => sub {
