@@ -16,6 +16,9 @@ test_psgi $app, sub {
     is $res->content_type, 'text/html';
     like $res->content, qr/Blog posts from 2010\/02/;
 
+    $res = $cb->(POST "/blog/2009/01");
+    ok $res->is_error;
+
     $res = $cb->(POST "/comment", { name => "miyagawa", body => "Awesome blog!" });
     like $res->content, qr/body=Awesome blog!/;
 
