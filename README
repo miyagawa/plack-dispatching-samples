@@ -6,3 +6,7 @@ Most examples would do:
   GET /blog/{year}/{month} => Get the list of blog posts in year/month
   POST /comment => Post a comment with parameters id, name and body
 
+You can run tests against the dispatcher using:
+
+  perl tester.pl <dispatcher.pl>
+
