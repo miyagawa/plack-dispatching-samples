@@ -1,14 +1,11 @@
-# NOTE: Mojolicious doesn't use Plack::Request - here's for a comparison
-
 use Mojolicious::Lite;
 
 get '/' => sub {
     my $self = shift;
-    $self->res->headers->content_type('text/plain');
-    $self->render_text("Hello World");
+    $self->render_text("Hello World", format => 'txt');
 };
 
-get '/blog/:year/:month' => sub {
+get '/blog/:year/:month' => [ year => qr/\d{4}/, month => qr/\d{2}/ ], sub {
     my $self = shift;
     $self->render_text("Blog posts from " . $self->stash('year') . "/" . $self->stash('month'));
 };
