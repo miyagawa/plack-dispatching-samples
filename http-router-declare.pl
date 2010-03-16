@@ -3,10 +3,6 @@ use strict;
 use Plack::Request;
 use HTTP::Router::Declare;
 
-use lib "lib";
-use MyApp::Blog;
-use MyApp::Hello;
-
 my $router = router {
     match '/', { method => 'GET' }, to { action => sub {
         my($req, $p) = @_;
