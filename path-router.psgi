@@ -41,7 +41,7 @@ sub {
     my $mapping = $match->mapping;
     my $controller = "MyApp::" . $mapping->{controller};
     my $action = $controller->can(lc($req->method) . "_" . $mapping->{action})
-        or return $req->new_response(404)->finalize;
+        or return $req->new_response(405)->finalize;
     my $res = $controller->$action($req, $mapping);
     $res->finalize;
 };

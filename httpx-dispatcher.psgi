@@ -19,7 +19,8 @@ sub {
         or return $req->new_response(404)->finalize;
 
     my $controller = "MyApp::$match->{controller}";
-    my $action = $controller->can(lc($req->method) . "_" . $match->{action});
+    my $action = $controller->can(lc($req->method) . "_" . $match->{action})
+        or return $req->new_response(405)->finalize;
     my $res = $controller->$action($req, $match->{args});
     $res->finalize;
 };

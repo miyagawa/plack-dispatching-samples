@@ -26,6 +26,15 @@ test_psgi $app, sub {
 
     $res = $cb->(GET "/nonexistent");
     is $res->code, 404;
+
+ TODO: {
+        local $TODO = "Nice to have";
+        $res = $cb->(POST "/blog/2009/01");
+        is $res->code, 405, '405 on POST requests against GET only endpoints';
+
+        $res = $cb->(GET "/blog/now/today");
+        is $res->code, 404, 'year & month can specify digits';
+    }
 };
 
 done_testing;

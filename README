@@ -2,11 +2,57 @@ This is a collection of URI dispatching using Plack::Request and various CPAN mo
 
 Most examples would do:
 
-  GET / => "Hello World"
+  GET / => "Hello World" in text/plain
   GET /blog/{year}/{month} => Get the list of blog posts in year/month
   POST /comment => Post a comment with parameters id, name and body
 
+Nice to have:
+
+  /blog/{year}/{month} should be limited to 4-digit year and 2-digit month
+  POST to GET-only endpoints should raise 405
+
 You can run tests against the dispatcher using:
 
-  perl tester.pl <dispatcher.pl>
+  perl tester.pl <dispatcher.psgi>
 
+NOTES
+
+Here're some notes and observations. This is not a check-no-check
+comparison. When it says "Can't do ...", it doesn't necessarily mean a
+minus - it means it's application's responsibility, which could mean
+more flexibilities.
+
+dancer:
+  (Dancer doesn't use Plack::Request -- here's for the comparison)
+  Can use named capture and regexp based dispatching
+  POST to GET endpoints gives 404 by default
+
+HTTP::Router::Declare:
+  Can dispatch using HTTP methods as well
+  (You can remove { method => 'GET' } requirement to make 405 fallbacks work)
+  Can specify requirement like routes.py
+
+HTTPx::Dispatcher:
+  Can't use HTTP method as a dispatcher rule - it's an app's responsibility
+  Can't use regular expressions / requirements
+
+Mojolicious::Lite:
+  (Mojolicious doesn't use Plack::Request -- here's for the comparison)
+  Can use named capture + regexp requirement like Merb / HTTP::Router
+  POST to GET endpoints gives 404 by default
+
+Path::Dispatcher:
+  Passing PSGI env to the metadata for REQUEST_METHOD matching
+  (You can omit that to make 405 fallbacks on the app work)
+
+Path::Router:
+  Can use Moose based constraints to validate path chunks
+  Can't use HTTP method as a dispatcher rule - it's an app's reponsibility
+
+Tatsumaki:
+  Can't use HTTP method as a dispatcher rule - app handlers need to define the verbs
+  Default '/' is catch-all as of 0.1009 -- needs to be qr/^\/$/ (will be fixed in 0.1010)
+  The mapping order matters -- sometimes confusing
+
+Web::Simple:
+  Can't use regexp for dispatcher rules -- app's responsibility
