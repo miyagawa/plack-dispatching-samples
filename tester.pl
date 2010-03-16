@@ -9,9 +9,11 @@ test_psgi $app, sub {
     my $cb = shift;
 
     my $res = $cb->(GET "/");
+    is $res->content_type, 'text/plain';
     like $res->content, qr/Hello World/;
 
     $res = $cb->(GET "/blog/2010/02");
+    is $res->content_type, 'text/html';
     like $res->content, qr/Blog posts from 2010\/02/;
 
     $res = $cb->(POST "/comment", { name => "miyagawa", body => "Awesome blog!" });
