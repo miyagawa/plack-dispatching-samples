@@ -3,6 +3,7 @@ use Plack::Util;
 use HTTP::Request::Common;
 use Test::More;
 
+$ENV{PLACK_ENV} = 'development';
 my $app = Plack::Util::load_psgi($ARGV[0]);
 
 test_psgi $app, sub {

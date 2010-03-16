@@ -16,4 +16,4 @@ post '/comment' => sub {
     $self->render_text("Comment posted with body=" . $self->param('body'));
 };
 
-shagadelic('psgi');
+shagadelic;
