@@ -1,4 +1,5 @@
-This is a collection of URI dispatching using Plack::Request and various CPAN modules.
+This is a collection of URI dispatching example code using
+Plack::Request/Response and various dispatcher modules on CPAN.
 
 Most examples would do:
 
@@ -17,10 +18,11 @@ You can run tests against the dispatcher using:
 
 NOTES
 
-Here're some notes and observations. This is not a check-no-check
-comparison. When it says "Can't do ...", it doesn't necessarily mean a
-minus - it means it's application's responsibility, which could mean
-more flexibilities.
+This is NOT a check-no-check comparison. This is NOT a golf contest either.
+
+When it says "Can't do ...", it doesn't necessarily mean a minus - it
+means it's application's responsibility, which could mean more
+flexibilities.
 
 Also, the requirement "POST to GET-only endpoint should give 405" is
 nice to have, while in many cases it's not a fair game to add to
