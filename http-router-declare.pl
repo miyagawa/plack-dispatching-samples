@@ -8,12 +8,27 @@ use MyApp::Blog;
 use MyApp::Hello;
 
 my $router = router {
-    match '/', { method => 'GET' },
-        to { controller => 'Hello', action => 'index' };
-    match '/blog/{year}/{month}', { method => 'GET' },
-        to { controller => 'Blog', action => 'monthly' };
-    match '/comment', { method => 'POST' },
-        to { controller => 'Blog', action => 'new_comment' };
+    match '/', { method => 'GET' }, to { action => sub {
+        my($req, $p) = @_;
+        my $res = $req->new_response(200);
+        $res->content_type("text/plain");
+        $res->content("Hello World");
+        $res;
+    } };
+    match '/blog/{year}/{month}', { method => 'GET' }, to { action => sub {
+        my($req, $p) = @_;
+        my $res = $req->new_response(200);
+        $res->content_type('text/html');
+        $res->content("Blog posts from $p->{year}/$p->{month}");
+        $res;
+    } };
+    match '/comment', { method => 'POST' }, to { action => sub {
+        my($req, $p) = @_;
+        my $res = $req->new_response(200);
+        $res->content_type('text/plain');
+        $res->content("Comment posted with body=" . $req->parameters->{body});
+        $res;
+    } };
 };
 
 sub {
@@ -22,8 +37,6 @@ sub {
         or return $req->new_response(404)->finalize;
 
     my $p = $match->params;
-    my $controller = "MyApp::$p->{controller}";
-    my $action = $p->{action};
-    my $res = $controller->$action($req, $p);
+    my $res = $p->{action}->($req, $p);
     $res->finalize;
 };
