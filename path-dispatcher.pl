@@ -10,7 +10,7 @@ use MyApp::Hello;
         token_delimiter => '/',
     };
 
-    on [] => sub { MyApp::Hello->get_index(@_) };
+    on qr{^/$} => sub { MyApp::Hello->get_index(@_) };
 
     under { REQUEST_METHOD => 'GET' } => sub {
         on ['blog', qr/^\d+$/, qr/^\d+$/] => sub {
