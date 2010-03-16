@@ -1,4 +1,5 @@
-# PSGI application bootstraper for Dancer
+# NOTE: Dancer doesn't use Plack::Request - here's for a comparison
+
 use Dancer::Config 'setting';
 setting apphandler  => 'PSGI';
 Dancer::Config->load;

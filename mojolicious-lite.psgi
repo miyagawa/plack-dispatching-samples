@@ -1,3 +1,5 @@
+# NOTE: Mojolicious doesn't use Plack::Request - here's for a comparison
+
 use Mojolicious::Lite;
 
 get '/' => sub {
