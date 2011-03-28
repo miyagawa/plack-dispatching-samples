@@ -4,7 +4,7 @@ package TestApp;
 use Plack::Request;
 use Plack::Response;
 
-dispatch {
+sub dispatch_request {
     sub (GET + /) {
         my $res = Plack::Response->new(200);
         $res->content_type('text/plain');
@@ -31,7 +31,7 @@ dispatch {
     sub (GET) {
         Plack::Response->new(404)->finalize;
     }
-};
+}
 
-TestApp->as_psgi_app;
+TestApp->to_psgi_app;
 
