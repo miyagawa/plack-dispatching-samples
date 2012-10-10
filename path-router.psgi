@@ -1,14 +1,13 @@
-use Plack::Request;
-use Plack::Response;
-
 use MyApp::Blog;
 use MyApp::Hello;
 
 use Path::Router;
+use Plack::App::Path::Router;
 use Moose::Util::TypeConstraints;
 
 sub dispatch {
-    my ($r, $mapping) = @_;
+    my ($r) = @_;
+    my $mapping = $r->env->{'plack.router.match'}->mapping;
     my $controller = 'MyApp::' . $mapping->{controller};
     my $action = $controller->can(lc($r->method) . '_' . $mapping->{action})
         or return $r->new_response(405);
@@ -16,7 +15,7 @@ sub dispatch {
 }
 
 my $router = Path::Router->new;
-$router->add_route('' => (
+$router->add_route('/' => (
     defaults => {
         controller => 'Hello',
         action     => 'index',
@@ -24,7 +23,7 @@ $router->add_route('' => (
     target => \&dispatch
 ));
 
-$router->add_route('blog/:year/:month' => (
+$router->add_route('/blog/:year/:month' => (
     defaults => {
         controller => 'Blog',
         action     => 'monthly',
@@ -36,7 +35,7 @@ $router->add_route('blog/:year/:month' => (
     target => \&dispatch
 ));
 
-$router->add_route('comment', => (
+$router->add_route('/comment', => (
     defaults => {
         controller => 'Blog',
         action     => 'comment',
@@ -44,11 +43,4 @@ $router->add_route('comment', => (
     target => \&dispatch
 ));
 
-sub {
-    my $req = Plack::Request->new(shift);
-    my $match = $router->match($req->path_info)
-        or return $req->new_response(404)->finalize;
-
-    my $res = $match->target->($req, $match->mapping);
-    $res->finalize;
-};
+Plack::App::Path::Router->new(router => $router)->to_app;
